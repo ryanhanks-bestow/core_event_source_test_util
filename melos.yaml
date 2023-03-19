@@ -1,0 +1,83 @@
+name: core_event_source_test_util
+
+ide:
+  intellij:
+    moduleNamePrefix: ''
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+    runPubGetOffline: true
+    runPubGetInParallel: true
+
+packages:
+  - '.'
+
+
+scripts:
+
+  pub_get:
+    name: pub_get
+    run: melos exec -- "flutter pub get"
+    select-package:
+
+  index_generator:
+    run: |
+      melos exec --diff=HEAD -c 43 -- \
+        flutter pub global run index_generator
+  index_generator:all:
+    run: |
+      melos exec -c 30 -- \
+        flutter pub global run index_generator
+
+  build:
+    run: multipack pub run build_runner build
+
+  watch:
+    run: |
+      melos exec --depends-on=build_runner -c 35 \
+        --scope=core_* --include-dependencies \
+        -- \
+        flutter pub run build_runner watch --delete-conflicting-outputs
+  watch:ref:
+    run: |
+      melos exec --depends-on=build_runner -c 10 
+        --scope="*_spec" --scope="*_example" \
+        -- \
+        flutter pub run build_runner watch --delete-conflicting-outputs
+
+  test:
+    run: |
+      melos exec  -c 5 \
+        --dir-exists="test" \
+        -- flutter test --branch-coverage test
+  test:flutter:
+    run: |
+      melos exec \
+        --flutter \
+        --dir-exists="test" \
+        -- flutter test
+  test:flutter:coverage:
+    run: |
+      melos exec \
+        --flutter \
+        --dir-exists="test" \
+        -- flutter test --coverage
+  coverage:genhtml:
+    run: |
+      melos exec \
+        --flutter \
+        --dir-exists="coverage" \
+        -- genhtml coverage/lcov.info -o coverage/html
+  coverage:view:
+    run: |
+      melos exec \
+        --flutter \
+        --dir-exists="coverage" \
+        -- open coverage/html/index.html
+  test:integration:
+    run: |
+      melos exec \
+        --flutter \
+        --dir-exists="integration_test" \
+        -- flutter test integration_test
