@@ -9,7 +9,10 @@ environment:
 
 dependencies:
   core_event_source:
-    path: ../core_event_source
+    git:
+      url: https://github.com/ryanhanks-bestow/core_event_source
+      ref: main
+
   async:
   bloc:
   bloc_concurrency:
