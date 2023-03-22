@@ -26,7 +26,7 @@ dependencies:
   meta:
   matcher:
   given_when_then_unit_test:
-  checks: ^0.2.1
+  test:
 
 dev_dependencies:
   bloc_test:
